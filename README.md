@@ -27,11 +27,13 @@ In order to search within the TI-Planet archives, you can use one or several of 
 *	…&req=search&title=XXXX       for filtering by the title of the archives
 *	…&req=search&author=XXXX      for filtering by name of the archives' author(s)
 *	…&req=search&platform=XXXX    for filtering by the platform of the archives
+
 *Note : filtering by platform requires having filtered by title or author (or both).*
 
 ### Archive information
 In order to retreive information about a specific archive , you must provide the "arcID" parameter: 
 …&req=info&arcID=XXXX      	  "arcID" being the TI-Planet archive ID
+
 *Note : the ‘arcID' value is a positive integer.*
 
 
@@ -41,6 +43,7 @@ To chose between those three, specify the type in an "output" parameter :
 *	…&output=xml     for a XML (1.0 valid) response (application/xml)
 *	…&output=php     for a PHP serialized-array response (application/vnd.php.serialized)
 *	…&output=json    (default – not needed) (application/json)
+
 *Note :  ‘phpdebug' is also available for debugging purposes, which outputs the response with print_r().*
 
 
@@ -52,7 +55,9 @@ Ever response will contain the 3 following fields :
 *	Status         either 0 (OK) or the error code	(integer)
 *	Message        details about the Status		(string)
 *	Results        the number of results		(integer)
+
 *Note : An additional "Alert" field will be added in case of an unrecognized output format variable, with a "Unrecognized output type 'xxxxx' ; defaulting to json." message.*
+
 Possible error codes with their corresponding messages, by order of importance :
 *	 1 : "No API key given !"
 *	 2 : "Invalid API key !"
@@ -71,6 +76,7 @@ The results are outputted as indexed arrays (json/php) or within a "ResultX" tag
 
 #### Archive information request
 "arcID", "title", "upload_date", "author", "category", "screenshot", "url", "dlcount", "nspire_os", "license", "platform", "page".
+
 *Note : author and category can be arrays of strings if there are multiple authors or categories.*
 
 
