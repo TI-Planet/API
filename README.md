@@ -9,7 +9,7 @@ See PDF documentation for a better output ;)
 ## Introduction
 First, we'd like to thank you for your interest in the TI-Planet API ; we can't wait to see what you'll create!
 Here are a few things you should know before getting to the heart of the matter.
-*	API Key : Like many other APIs, ours too needs you to provide your unique API Key in order to function, in each request. You can obtain one by emailing us (info@tiplanet.org) and tell us in a few words what you're going to do with the API.
+*	API Key : Like many other APIs, ours too needs you to provide your unique API Key in order to function, in each request. You can obtain one by emailing us (info -at- tiplanet.org) and tell us in a few words what you're going to do with the API.
 *	Protocol & URL : The API is located at  tiplanet.org/api.php , accessible in HTTP or HTTPS.
 *	HTTP methods : The API accepts both GET and POST HTTP requests. For the sake of clarity, the documentation will be using GET methods.
 *	"Fair use" : We'd like you to use the API responsibly and reasonably. And don't be evil ;-)
@@ -90,5 +90,5 @@ http://tiplanet.org/api.php?key=XXXXXXX&req=arc&arcID=6034
 
 ## Feedback
 A question ? A bug report ? A feature request ? We do welcome any feedback, of course :-) 
-You can post on our forum or drop us an email (info@tiplanet.org).
+You can post on our forum or drop us an email (info -at- tiplanet.org).
 
