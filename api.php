@@ -138,7 +138,8 @@ if ($output_type == "xml") {
 } elseif ($output_type == "php") {
     finalOutput(serialize($results), 'Content-Type: application/vnd.php.serialized; charset=utf-8');
 } elseif ($output_type == "phpdebug") {
-    finalOutput($results, 'Content-Type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
+    print_r($results);
 } else {
     if ($output_type != "json")
         $results = array("Alert" => "Unrecognized output type '" . $output_type . "' ; defaulting to json.") + $results;
