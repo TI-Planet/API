@@ -134,4 +134,29 @@ function output_resultsNumber($nbr)
     $results["Results"] = $nbr;
 }
 
+
+function finalOutput($data, $header) {
+    global $useGZ;
+    if ($useGZ) {
+
+        //ini_set('zlib.output_compression','Off');
+        // woot ?
+
+        $gzipOutput = gzencode($data);
+
+        header('Content-Type: application/x-download');
+        header('Content-Encoding: gzip');
+        //header('Content-Length: '.strlen($gzipOutput)); // useless ?
+        header('Content-Disposition: attachment; filename="api-response-' . time() . '.gz"');
+        header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
+        header('Pragma: no-cache');
+        // maybe we can think about something for caching....
+
+        echo $gzipOutput;
+    } else {
+        header($header);
+        echo $data;
+    }
+}
+
 ?>

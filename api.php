@@ -13,6 +13,10 @@ $output_type = "json";
 if (@ishere($_REQUEST["output"])) {
     $output_type = strtolower($_REQUEST["output"]);
 }
+$useGZ = false;
+if (@ishere($_REQUEST["gz"]) && $_REQUEST["gz"] == "1") {
+    $useGZ = true;
+}
 
 if (@ishere($_REQUEST["key"])) {
     $apiKey = $_REQUEST["key"];
@@ -130,19 +134,18 @@ if (@ishere($_REQUEST["key"])) {
 if ($output_type == "xml") {
     $xml = new SimpleXMLElement('<APIResponse/>');
     array_to_xml($results, $xml);
-    header('Content-Type: application/xml; charset=utf-8');
-    echo $xml->asXML();
+    finalOutput($xml->asXML(), 'Content-Type: application/xml; charset=utf-8');
 } elseif ($output_type == "php") {
-    header('Content-Type: application/vnd.php.serialized; charset=utf-8');
-    echo serialize($results);
+    finalOutput(serialize($results), 'Content-Type: application/vnd.php.serialized; charset=utf-8');
 } elseif ($output_type == "phpdebug") {
-    header('Content-Type: text/plain; charset=utf-8');
-    print_r($results);
+    finalOutput($results, 'Content-Type: text/plain; charset=utf-8');
 } else {
     if ($output_type != "json")
         $results = array("Alert" => "Unrecognized output type '" . $output_type . "' ; defaulting to json.") + $results;
-    header("Content-Type: application/json; charset=utf-8");
-    echo json_encode($results);
+    finalOutput(json_encode($results), 'Content-Type: application/json; charset=utf-8');
 }
+
+error_reporting(0);
+ini_set('display_errors', '0');
 
 ?>
