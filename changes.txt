@@ -1,4 +1,4 @@
-﻿30/08/2013  -
+﻿30/08/2013  -  https://github.com/TI-Planet/API/commit/3a33e075ec6e8a259dbf4cc14875891ca2dd3dc2
 --------------------------------------------------------------------------------------------------------------
     - Removed the [useless] limit in number of results (it was 500 before)
     - You can now list all files for a given platform, as requested :   ...&req=search&platform=68k   for example.
