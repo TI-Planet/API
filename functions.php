@@ -1,6 +1,5 @@
 <?php
 
-// function defination to convert array to xml
 function array_to_xml($results, &$xml)
 {
     foreach ($results as $key => $value) {
@@ -57,50 +56,37 @@ function improve_urls(&$array)
 
 function put_platform(&$array)
 {
-    $array["platform"] = "Unknown";
-    switch (gettype($array["category"])) {
-        case "string":
-            $array["platform"] = trim(substr($array["category"], strrpos($array["category"], ' ')));
-            break;
-        case "array":
-            $array["platform"] = array();
-            foreach ($array["category"] as $item)
-                array_push($array["platform"], trim(substr($item, strrpos($item, ' '))));
-            break;
+    $array["platform"] = array();
+    foreach ($array["category"] as $key => $value) {
+        array_push($array["platform"], trim(substr($value, strrpos($value, " "))));
+        $array["category"][$key] = substr($value, 0, strrpos($value, " ")); // removing last word
     }
 }
 
-function improve_categories(&$array) {
-    if (gettype($array["category"]) == "string") {
-        $array["category"] = substr($array["category"], 0, strrpos($array["category"], " ")); // removing last word
-    } else { // array
-        foreach ($array["category"] as $key => $value) {
-            $array["category"][$key] = substr($value, 0, strrpos($value, " ")); // removing last word
+function improve_categories(&$array)
+{
+    $array["category"] = array( $array["category"] , $array["category2"] , $array["category3"] , $array["category4"] );
+    unset($array["category2"], $array["category3"], $array["category4"]);
+    $array["category"] = array_filter($array["category"]); // remove empty elements (keeping the ones with value "0")
+
+    foreach ($array["category"] as $value) {
+        if (strpos($value, 'Nspire') !== false) {
+            if (@ishere($array["nspire_os"]) && $array["nspire_os"] == '') // try to guess the OS according to the upload date (the timestamp is a bit after 3.1's release)
+                $array["nspire_os"] = ($array["upload_date"] > 1317420000 ? "3.1+ (?)" : "<= 3.0 (?)");
+            break;
         }
-        $array["category"] = array_unique($array["category"]);
-        if (sizeof($array["category"]) == 1) $array["category"] = $array["category"][0];
     }
+
+    put_platform($array);
+
+    $array["category"] = array_unique($array["category"]);
 }
 
 function improve($array)
 {
-    $tmp = $array["category"] . "~;~" . $array["category2"] . "~;~" . $array["category3"] . "~;~" . $array["category4"];
-    if (strpos($tmp, 'Nspire') !== false) { // string contained in another string...
-        if ($array["nspire_os"] == '') // try to guess the OS according to the upload date (the timestamp is a bit after 3.1's release)
-            $array["nspire_os"] = ($array["upload_date"] > 1317420000 ? "3.1+ (?)" : "<= 3.0 (?)");
-    }
-    if (@ishere($array["category2"])) {
-        $array["category"] = array_filter(explode("~;~", $tmp));
-        $array["category2"] = $array["category3"] = $array["category4"] = NULL;
-    }
-
-    $tmp = $array["author"] . "~;~" . $array["author2"] . "~;~" . $array["author3"] . "~;~" . $array["author4"];
-    if (@ishere($array["author2"])) {
-        $array["author"] = array_filter(explode("~;~", $tmp));
-        $array["author2"] = $array["author3"] = $array["author4"] = NULL;
-    }
-
-    put_platform($array);
+    $tmp = array( $array["author"] , $array["author2"] , $array["author3"] , $array["author4"] );
+    unset( $array["author2"], $array["author3"] , $array["author4"] );
+    $array["author"] = array_filter($tmp);
 
     improve_categories($array);
 
@@ -134,8 +120,8 @@ function output_resultsNumber($nbr)
     $results["Results"] = $nbr;
 }
 
-
-function finalOutput($data, $header) {
+function finalOutput($data, $header)
+{
     global $useGZ;
     if ($useGZ) {
 
@@ -144,12 +130,12 @@ function finalOutput($data, $header) {
 
         $gzipOutput = gzencode($data);
 
-        header('Content-Type: application/x-download');
+        //header('Content-Type: application/x-download');
         header('Content-Encoding: gzip');
         //header('Content-Length: '.strlen($gzipOutput)); // useless ?
-        header('Content-Disposition: attachment; filename="api-response-' . time() . '.gz"');
-        header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
-        header('Pragma: no-cache');
+        //header('Content-Disposition: attachment; filename="api-response-' . time() . '.gz"');
+        //header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
+        //header('Pragma: no-cache');
         // maybe we can think about something for caching....
 
         echo $gzipOutput;

@@ -21,6 +21,8 @@ if (@ishere($_REQUEST["gz"]) && $_REQUEST["gz"] == "1") {
 if (@ishere($_REQUEST["key"])) {
     $apiKey = $_REQUEST["key"];
 
+	$debug = false;
+	
     if (checkApiKEY($pdo, $apiKey)) {
         $reqType = "none";
         $resCount = 0;
@@ -31,7 +33,7 @@ if (@ishere($_REQUEST["key"])) {
                     if (@ishere($_REQUEST['arcID'])) {
                         $arcID = (int)$_REQUEST['arcID'];
 
-                        $cols = "archives.id as arcID, nom AS title, date AS upload_date, author, author2, author3, author4, "
+                        $cols = "archives.id as arcID, nom AS name, date AS upload_date, author, author2, author3, author4, "
                               . "categorie AS category, categorie2 AS category2, categorie3 AS category3, categorie4 AS category4, private, "
                               . "capture AS screenshot, fichier AS url, hit AS dlcount, os AS nspire_os, licence.title AS license";
 
@@ -59,11 +61,11 @@ if (@ishere($_REQUEST["key"])) {
                             }
                         }
                     } else {
-                        output_status(30, "No arcID given !");
+                        output_status(30, "No archive id ('arcID') given !");
                     }
                     break;
                 case "search":
-                    if (@ishere($_REQUEST['name']) || @ishere($_REQUEST['author'])) {
+                    if (@ishere($_REQUEST['name']) || @ishere($_REQUEST['platform']) || @ishere($_REQUEST['author'])) {
 
                         $filterName = $filterAuthor = $filterPlatform = "";
                         $params = array();
@@ -78,42 +80,38 @@ if (@ishere($_REQUEST["key"])) {
 
                         if (@ishere($_REQUEST['name'])) {
                             if (strlen($_REQUEST['name']) < 5) {
-                                $filterName = "AND nom REGEXP CONCAT( :name , '(.*)') " . $filterPlatform;
+                                $filterName = "AND nom REGEXP CONCAT( :name , '(.*)') ";
                             } else {
-                                $filterName = "AND nom REGEXP CONCAT('(.*)', :name , '(.*)') " . $filterPlatform;
+                                $filterName = "AND nom REGEXP CONCAT('(.*)', :name , '(.*)') ";
                             }
                             $params[":name"] = $_REQUEST['name'];
                         }
 
                         if (@ishere($_REQUEST['author'])) {
                             if (strlen($_REQUEST['author']) <= 5) {
-                                $filterAuthor = "AND author = :author " . $filterPlatform;
+                                $filterAuthor = "AND author = :author ";
                             } else {
-                                $filterAuthor = "AND author REGEXP CONCAT('(.*)', :author , '(.*)') " . $filterPlatform;
+                                $filterAuthor = "AND author REGEXP CONCAT('(.*)', :author , '(.*)') ";
                             }
                             $params[":author"] = $_REQUEST['author'];
                         }
 
-                        $cols = "archives.id as arcID, nom AS title, categorie AS category";
+                        $cols = "archives.id as arcID, nom AS name, categorie AS category, categorie2 AS category2, categorie3 AS category3, categorie4 AS category4";
 
-                        $req = $pdo->prepare('SELECT ' . $cols . ' FROM archives WHERE private=0 ' . $filterAuthor . $filterName );
+                        $req = $pdo->prepare('SELECT ' . $cols . ' FROM archives WHERE private=0 ' . $filterPlatform . $filterAuthor . $filterName );
                         $req->execute($params);
                         $req->setFetchMode(PDO::FETCH_ASSOC);
 
                         foreach ($req as $item) {
                             $resCount++;
-                            put_platform($item);
-                            unset($item["category"]);
+                            improve_categories($item); // (platform)
+                            unset($item["category"], $item["nspire_os"]);
                             output($item);
-                            if ($resCount == 500) {
-                                $results = array("Alert" => "Max results (500) reached. Consider filtering (more).") + $results;
-                                break;
-                            }
                         }
                         output_resultsNumber($resCount);
-                        output_status(0, "Request successful (" . round((microtime() - TIME_START), 4) . " s.)");
+                        output_status(0, "Request successful" . ($debug ? " (" . round((microtime() - TIME_START), 4) . " s.)" : ""));
                     } else {
-                        output_status(20, "Neither 'name' nor 'author' parameter given !");
+                        output_status(20, "Neither 'name' nor 'author' nor 'platform' parameter given !");
                     }
                     break;
                 default:

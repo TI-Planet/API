@@ -1,0 +1,31 @@
+﻿30/08/2013  -
+--------------------------------------------------------------------------------------------------------------
+    - Removed the [useless] limit in number of results (it was 500 before)
+    - You can now list all files for a given platform, as requested :   ...&req=search&platform=68k   for example.
+    - Changed all occurences of "title" by "name" which makes more sense, I believe.
+    - Rewrote the wtf-esque multiple-fields-to-array things, which simplified other things.
+    - "Author", "Category", and "Platform" fields are now arrays of string(s)
+
+    HTTP Auth is still in the todo list but it quite heavily depends on getting apache to run correctly, which is not a quickfix...
+    For now, no changes to the the method of geetting results : http get/post with the api key parameter.
+
+
+
+15/08/2013  -  https://github.com/TI-Planet/API/commit/6dc9c20b761753d08104a9a14173fbbae9e22eaa
+--------------------------------------------------------------------------------------------------------------
+    Some work on gz compression for output
+
+
+
+14/08/2013  -  https://github.com/TI-Planet/API/commit/69bf9d4b468b18d5b8a19ce936aaf8f12672764f
+--------------------------------------------------------------------------------------------------------------
+    First public version.
+
+    Documentation is here : http://tiplanet.org/forum/archives_voir.php?id=19600
+
+    TL;DR :
+    - search within the archives with filters
+    - get info about an archive by its id
+    - output possible in json, xml, php-serialized-array, php-print_r
+    - get/post requests supported
+    - http & https supported
