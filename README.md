@@ -1,7 +1,7 @@
 ﻿TI-Planet API
 ===
 
-TI-Planet API					     Version 1.0 
+TI-Planet API					     Version 1.1 
 
 See PDF documentation for a better output ;)
 
@@ -12,23 +12,22 @@ Here are a few things you should know before getting to the heart of the matter.
 *	API Key : Like many other APIs, ours too needs you to provide your unique API Key in order to function, in each request. You can obtain one by emailing us (info -at- tiplanet.org) and tell us in a few words what you're going to do with the API.
 *	Protocol & URL : The API is located at  tiplanet.org/api.php , accessible in HTTP or HTTPS.
 *	HTTP methods : The API accepts both GET and POST HTTP requests. For the sake of clarity, the documentation will be using GET methods.
-*	"Fair use" : We'd like you to use the API responsibly and reasonably. And don't be evil ;-)
+*	"Fair use" : We'd like you to use the API responsibly and reasonably - don't be evil ;-)
 *	Legal : The TI-Planet API is "as is" with no express or implied warranty for accuracy or accessibility.
 
 
 ## Request types
 The API provides 2 types of requests : searching for archives and getting information on an archive.
 To chose between those two, specify the type in a "req" (request) parameter:
-* …&req=search    	for an archive search request
-*	…&req=info    	        	for an archive information request 
+* …&req=search    	   for an archive search request
+*	…&req=arc    	      for an archive information request 
 
 ### Archive search
 In order to search within the TI-Planet archives, you can use one or several of the following filters : 
-*	…&req=search&title=XXXX       for filtering by the title of the archives
+*	…&req=search&name=XXXX        for filtering by the title of the archives
 *	…&req=search&author=XXXX      for filtering by name of the archives' author(s)
 *	…&req=search&platform=XXXX    for filtering by the platform of the archives
 
-*Note : filtering by platform requires having filtered by title or author (or both).*
 
 ### Archive information
 In order to retreive information about a specific archive , you must provide the "arcID" parameter: 
@@ -45,6 +44,8 @@ To chose between those three, specify the type in an "output" parameter :
 *	…&output=json    (default – not needed) (application/json)
 
 *Note :  ‘phpdebug' is also available for debugging purposes, which outputs the response with print_r().*
+
+*Note : gz-compression can be enabled by passing  …&gz=1  (disabled by default).*
 
 
 ## Response
@@ -63,8 +64,8 @@ Possible error codes with their corresponding messages, by order of importance :
 *	 2 : "Invalid API key !"
 *	10 : "No request type given !"
 *	11 : "Unrecognized request type : 'xxxxx' !"
-*	20 : "Neither 'name' nor 'author' parameter given !"
-*	30 : "No arcID given !"
+*	20 : "Neither 'name' nor 'author' nor 'platform' parameter given !"
+*	30 : "No archive id ('arcID') given !"
 *	31 : "The archive does not exist !"
 *	32 : "The archive is private !"
 
@@ -72,12 +73,12 @@ Possible error codes with their corresponding messages, by order of importance :
 The results are outputted as indexed arrays (json/php) or within a "ResultX" tag (XML), containing all or a subset of the following keys/values (json/php) or tags (XML), which depend on the request type:
 
 #### Archive search request
-"arcID", "title", "platform".
+"arcID", "name", "platform".
 
 #### Archive information request
-"arcID", "title", "upload_date", "author", "category", "screenshot", "url", "dlcount", "nspire_os", "license", "platform", "page".
+"arcID", "name", "upload_date", "author", "category", "screenshot", "url", "dlcount", "nspire_os", "license", "platform", "page".
 
-*Note : author and category can be arrays of strings if there are multiple authors or categories.*
+*Note : The 'author', 'platform' and 'category' fields are arrays of string(s).*
 
 
 ## Examples
