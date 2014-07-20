@@ -12,7 +12,8 @@ function array_to_xml($results, &$xml)
                 array_to_xml($value, $subnode);
             }
         } else {
-            $xml->addChild(is_numeric($key) ? "item$key" : "$key", "$value");
+            $child = $xml->addChild(is_numeric($key) ? "item$key" : "$key");
+            $child->value = "$value";
         }
     }
 }
@@ -48,10 +49,12 @@ function clean($var)
 
 function improve_urls(&$array)
 {
-    if (isset($array["screenshot"]) && substr($array["screenshot"], 0, 4) !== "http")
+    if (isset($array["screenshot"]) && substr($array["screenshot"], 0, 4) !== "http") {
         $array["screenshot"] = "https://tiplanet.org/" . $array["screenshot"];
+        $array["screenshot"] = str_replace("org/../", "org/", $array["screenshot"]);
+    }
     if (isset($array["url"]) && substr($array["url"], 0, 4) !== "http")
-        $array["url"] = "https://tiplanet.org/modules/archives/" . $array["url"];
+        $array["url"] = "https://tiplanet.org/modules/archives/download.php?id=" . $array["arcID"];
 }
 
 function put_platform(&$array)
@@ -65,7 +68,7 @@ function put_platform(&$array)
 
 function improve_categories(&$array)
 {
-    $array["category"] = array( $array["category"] , $array["category2"] , $array["category3"] , $array["category4"] );
+    $array["category"] = array($array["category"], $array["category2"], $array["category3"], $array["category4"]);
     unset($array["category2"], $array["category3"], $array["category4"]);
     $array["category"] = array_filter($array["category"]); // remove empty elements (keeping the ones with value "0")
 
@@ -84,8 +87,8 @@ function improve_categories(&$array)
 
 function improve($array)
 {
-    $tmp = array( $array["author"] , $array["author2"] , $array["author3"] , $array["author4"] );
-    unset( $array["author2"], $array["author3"] , $array["author4"] );
+    $tmp = array($array["author"], $array["author2"], $array["author3"], $array["author4"]);
+    unset($array["author2"], $array["author3"], $array["author4"]);
     $array["author"] = array_filter($tmp);
 
     improve_categories($array);
@@ -93,7 +96,7 @@ function improve($array)
     $array = array_filter($array, 'clean'); // remove empty elements (keeping the ones with value "0")
     unset($array["private"]);
 
-    if (@ishere($array["license"]) && $array["license"] == "Non spécifiée / Incluse") $array["license"] = "Unknown / included";
+    if (@ishere($array["license"]) && strpos($array["license"], "Non spécifiée") !== false) $array["license"] = "Unknown / included";
     $array["page"] = "https://tiplanet.org/forum/archives_voir.php?id=" . $array["arcID"];
 
     improve_urls($array);
@@ -122,27 +125,8 @@ function output_resultsNumber($nbr)
 
 function finalOutput($data, $header)
 {
-    global $useGZ;
-    if ($useGZ) {
-
-        //ini_set('zlib.output_compression','Off');
-        // woot ?
-
-        $gzipOutput = gzencode($data);
-
-        //header('Content-Type: application/x-download');
-        header('Content-Encoding: gzip');
-        //header('Content-Length: '.strlen($gzipOutput)); // useless ?
-        //header('Content-Disposition: attachment; filename="api-response-' . time() . '.gz"');
-        //header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
-        //header('Pragma: no-cache');
-        // maybe we can think about something for caching....
-
-        echo $gzipOutput;
-    } else {
-        header($header);
-        echo $data;
-    }
+    header($header);
+    echo $data;
 }
 
 ?>
