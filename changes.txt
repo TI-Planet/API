@@ -1,4 +1,17 @@
-﻿30/08/2013  -  https://github.com/TI-Planet/API/commit/3a33e075ec6e8a259dbf4cc14875891ca2dd3dc2
+﻿20/07/2014  -  1.3 : https://github.com/TI-Planet/API/commit/ef6eaba66f3f815ea10603d273ecb0da120928d1
+--------------------------------------------------------------------------------------------------------------
+    - Added the "list" request type to get a list of all public uploads (files actually uploaded, not created with our generators)
+    - The search request now accepts a category filter :   ...&req=search&category=math   for example.
+    - gz compression is now always enabled, so the manual flag for that is gone.
+    - Fix some XML encoding issue (unescaped characters that messes up SimpleXMLElement...)
+    - Better archive visibility handling (public/unlisted/private). (Actually this was done some time ago, just not committed...)
+    - 'prettyjson' output format added.
+    - No change on the auth. side, although Apache has been updated since last time, so HTTP auth could be worked on...
+    - Misc. README changes.
+
+
+
+30/08/2013  -  1.2 : https://github.com/TI-Planet/API/commit/3a33e075ec6e8a259dbf4cc14875891ca2dd3dc2
 --------------------------------------------------------------------------------------------------------------
     - Removed the [useless] limit in number of results (it was 500 before)
     - You can now list all files for a given platform, as requested :   ...&req=search&platform=68k   for example.
@@ -11,13 +24,13 @@
 
 
 
-15/08/2013  -  https://github.com/TI-Planet/API/commit/6dc9c20b761753d08104a9a14173fbbae9e22eaa
+15/08/2013  -  1.1 : https://github.com/TI-Planet/API/commit/6dc9c20b761753d08104a9a14173fbbae9e22eaa
 --------------------------------------------------------------------------------------------------------------
     Some work on gz compression for output
 
 
 
-14/08/2013  -  https://github.com/TI-Planet/API/commit/69bf9d4b468b18d5b8a19ce936aaf8f12672764f
+14/08/2013  -  1.0 : https://github.com/TI-Planet/API/commit/69bf9d4b468b18d5b8a19ce936aaf8f12672764f
 --------------------------------------------------------------------------------------------------------------
     First public version.
 
