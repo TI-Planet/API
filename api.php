@@ -76,14 +76,14 @@ if (@ishere($_REQUEST["key"])) {
                     foreach ($archives as $arc) {
                         output(AM_to_API($arc, true));
                     }
-                    output_resultsNumber(count($results));
+                    output_resultsNumber(count($archives));
                     output_status(0, "Request successful (listing all public uploads with their categories). " . ($debug ? " (" . abs(round((microtime() - TIME_START), 4)) . " s.)" : ""));
                     break;
 
                 case "search":
                     if (@ishere($_REQUEST['name']) || @ishere($_REQUEST['platform']) || @ishere($_REQUEST['author']) || @ishere($_REQUEST['category'])) {
 
-                        $filters = [ ["private","=","0"],["deleted","IS","NULL"], ["generator","=","0"] ];
+                        $filters = [ ["private","=","0"], ["deleted","IS","NULL"], ["generator","=","0"] ];
 
                         if (@ishere($_REQUEST['platform'])) {
                             $platform = $_REQUEST['platform'];
@@ -107,7 +107,7 @@ if (@ishere($_REQUEST["key"])) {
                         foreach ($archives as $arc) {
                             output(AM_to_API($arc, true));
                         }
-                        output_resultsNumber(count($results));
+                        output_resultsNumber(count($archives));
                         output_status(0, "Request successful" . ($debug ? " (" . abs(round((microtime() - TIME_START), 4)) . " s.)" : ""));
                     } else {
                         output_status(20, "At least 1 search filter ('name', 'author', 'category', 'platform') has to be given !");
