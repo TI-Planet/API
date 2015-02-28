@@ -38,29 +38,24 @@ if (@ishere($_REQUEST["key"])) {
             {
                 case "arc":
                 case "info":
-                    if (@ishere($_REQUEST['arcID'])) {
+                    if (@ishere($_REQUEST['arcID']))
+                    {
                         $arcID = (int)$_REQUEST['arcID'];
                         if ($arcID > 0)
                         {
-                            $needStatus = true;
-
                             $arcMan->select_archive($arcID);
                             $arc = $arcMan->get_archive_info();
 
                             if ($arc === null) {
                                 output_status(31, "This archive does not exist !");
                             } else {
-                                if ($arc->deleted !== null) {
+                                if ($arc->deleted !== false) {
                                     output_status(32, "This archive has been deleted.");
-                                    $needStatus = false;
-                                } else if ($arc->private === 1) {
+                                } elseif ($arc->private === 1) {
                                     output_status(32, "This archive is private.");
-                                    $needStatus = false;
                                 } else {
-                                    if ($needStatus) {
-                                        output_resultsNumber(1);
-                                        output_status(0, "Request successful (" . abs(round((microtime() - TIME_START), 4)) . " s.)");
-                                    }
+                                    output_resultsNumber(1);
+                                    output_status(0, "Request successful (" . abs(round((microtime() - TIME_START), 4)) . " s.)");
                                     output(AM_to_API($arc));
                                 }
                             }
@@ -73,7 +68,7 @@ if (@ishere($_REQUEST["key"])) {
                     break;
 
                 case "list":
-                    $archives = $arcMan->search([["private","=","0"],["deleted","IS","NULL"], ["generator","=","0"]], ["id", "name", "categories"], ["hitsD"], 99999);
+                    $archives = $arcMan->search([["private","=","0"], ["deleted","IS","NULL"], ["generator","=","0"]], ["id", "name", "categories"], ["hitsD"], 99999);
 
                     foreach ($archives as $arc) {
                         output(AM_to_API($arc, true));
