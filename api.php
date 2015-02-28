@@ -28,16 +28,7 @@ if (@ishere($_REQUEST["key"])) {
 
     $debug = false;
 
-    if ($apiKey == "test123") { // debug
-        $debug = true;
-        error_reporting(-1);
-        ini_set('display_errors', '1');
-    } else {
-        $debug = false;
-        error_reporting(0);
-        ini_set('display_errors', '0');
-    }
-
+   
     if (checkApiKEY($pdo, $apiKey)) {
         $reqType = "none";
         $resCount = 0;
