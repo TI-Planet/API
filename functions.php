@@ -38,7 +38,7 @@ function AM_to_API($arc, $light = false)
     $authors = $categories = $platforms = $targets = [];
 
     foreach ($arc->categories as &$categorie)
-        $categories = $categorie->name;
+        $categories[] = $categorie->name;
     foreach ($arc->platforms as $platform)
         $platforms[] = $platform->name;
     foreach ($arc->targets as $target)
