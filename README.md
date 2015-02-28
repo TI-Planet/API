@@ -1,7 +1,7 @@
 ﻿TI-Planet Archives API
 ===
 
-TI-Planet Archives API  -  Version 1.3  -  July 20th, 2014
+TI-Planet Archives API  -  Version 2.0  -  Feb. 27th, 2015
 
 See PDF documentation for a better output (but it can be a bit outdated).
 
