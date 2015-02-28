@@ -50,18 +50,19 @@ if (@ishere($_REQUEST["key"])) {
                             if ($arc === null) {
                                 output_status(31, "This archive does not exist !");
                             } else {
-                                if ($arc->deleted == true) {
+                                if ($arc->deleted !== null) {
                                     output_status(32, "This archive has been deleted.");
                                     $needStatus = false;
-                                } else if ($arc->private == true) {
-                                    output_status(32, "This archive is not public.");
+                                } else if ($arc->private === 1) {
+                                    output_status(32, "This archive is private.");
                                     $needStatus = false;
+                                } else {
+                                    if ($needStatus) {
+                                        output_resultsNumber(1);
+                                        output_status(0, "Request successful (" . abs(round((microtime() - TIME_START), 4)) . " s.)");
+                                    }
+                                    output(AM_to_API($arc));
                                 }
-                                if ($needStatus) {
-                                    output_resultsNumber(1);
-                                    output_status(0, "Request successful (" . abs(round((microtime() - TIME_START), 4)) . " s.)");
-                                }
-                                output(AM_to_API($arc));
                             }
                         } else {
                             output_status(30, "Invalid archive id ('arcID') given !");
