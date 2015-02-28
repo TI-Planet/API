@@ -44,7 +44,7 @@ function AM_to_API($arc, $light = false)
     foreach ($arc->targets as $target)
         $targets[] = $target->name;
     $new = [];
-    $new['arcID']       = $arc->id;
+    $new['arcID']       = (string)$arc->id;
     $new['name']        = $arc->name;
     $new['category']    = $categories;
     $new['target']      = $targets;
@@ -53,13 +53,13 @@ function AM_to_API($arc, $light = false)
 
     if (!$light) {
         $new['page'] = "http://ti-pla.net/a" . $arc->id;
-        $new['dlcount'] = $arc->hits;
+        $new['dlcount'] = (string)$arc->hits;
         $new['url'] = $arc->dl_link;
-        $new['upload_date'] = $arc->upload_date;
-        $new['update_date'] = $arc->update_date;
+        $new['upload_date'] = (string)$arc->upload_date;
+        $new['update_date'] = (string)$arc->update_date;
         $new['uploader'] = $arc->uploader->name;
-        $new['file_size'] = $arc->file_size;
-        $new['last_dl'] = $arc->last_hit_date;
+        $new['file_size'] = (string)$arc->file_size;
+        $new['last_dl'] = (string)$arc->last_hit_date;
         $new['screenshot'] = $arc->screenshots[0];
         $new['license'] = $arc->license->name;
 
