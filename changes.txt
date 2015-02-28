@@ -1,4 +1,4 @@
-﻿27/02/2015  -  2.0 : 
+﻿27/02/2015  -  2.0 : https://github.com/TI-Planet/API/commit/ef17acc97922fff24655ac134c1f0e2a816c3918
 --------------------------------------------------------------------------------------------------------------
     - Complete rewrite of the code interacting with the DB: the API now uses the internal ArchiveManager to make queries and return data accordingly.
     - A consequence of that is that more fields are available on the info/arc request type, for instance.
