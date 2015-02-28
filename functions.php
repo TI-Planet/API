@@ -18,21 +18,12 @@ function array_to_xml($results, &$xml)
     }
 }
 
-function ishere($thing = NULL)
-{
-    return isset($thing) && ($thing != '');
-}
-
 function checkApiKEY(PDO $pdo, $key)
 {
-    $isGood = false;
-
-    $req = $pdo->prepare('SELECT `name` FROM `api_users` WHERE `apikey` = :apiKey');
+    $req = $pdo->prepare('SELECT count(*) FROM `api_users` WHERE `apikey` = :apiKey');
     $req->execute(array(':apiKey' => $key));
-
-    foreach ($req as $_) $isGood = true;
-
-    return $isGood;
+    $nbr = $req->fetchColumn(0);
+    return ($nbr != 0);
 }
 
 function logQueryMetadata(PDO $pdo, $key, $type = "invalid", $results = 9001)
@@ -42,66 +33,48 @@ function logQueryMetadata(PDO $pdo, $key, $type = "invalid", $results = 9001)
     // stuff to do : detect too many queries from the same IP for auto-temp-ban, etc.
 }
 
-function clean($var)
+function AM_to_API($arc, $light = false)
 {
-    return (gettype($var) == "array") ? sizeof($var) : @strlen($var);
-}
+    $authors = $categories = $platforms = $targets = [];
 
-function improve_urls(&$array)
-{
-    if (isset($array["screenshot"]) && substr($array["screenshot"], 0, 4) !== "http") {
-        $array["screenshot"] = "https://tiplanet.org/" . $array["screenshot"];
-        $array["screenshot"] = str_replace("org/../", "org/", $array["screenshot"]);
-    }
-    if (isset($array["url"]) && substr($array["url"], 0, 4) !== "http")
-        $array["url"] = "https://tiplanet.org/modules/archives/download.php?id=" . $array["arcID"];
-}
+    foreach ($arc->categories as &$categorie)
+        $categories = $categorie->name;
+    foreach ($arc->platforms as $platform)
+        $platforms[] = $platform->name;
+    foreach ($arc->targets as $target)
+        $targets[] = $target->name;
+    $new = [];
+    $new['arcID']       = $arc->id;
+    $new['name']        = $arc->name;
+    $new['category']    = $categories;
+    $new['target']      = $targets;
+    $new['platform']    = $targets;
+    $new['actual_platform'] = $platforms;
 
-function put_platform(&$array)
-{
-    $array["platform"] = array();
-    foreach ($array["category"] as $key => $value) {
-        array_push($array["platform"], trim(substr($value, strrpos($value, " "))));
-        $array["category"][$key] = substr($value, 0, strrpos($value, " ")); // removing last word
-    }
-}
+    if (!$light) {
+        $new['page'] = "http://ti-pla.net/a" . $arc->id;
+        $new['dlcount'] = $arc->hits;
+        $new['url'] = $arc->dl_link;
+        $new['upload_date'] = $arc->upload_date;
+        $new['update_date'] = $arc->update_date;
+        $new['uploader'] = $arc->uploader->name;
+        $new['file_size'] = $arc->file_size;
+        $new['last_dl'] = $arc->last_hit_date;
+        $new['screenshot'] = $arc->screenshots[0];
+        $new['license'] = $arc->license->name;
 
-function improve_categories(&$array)
-{
-    $array["category"] = array($array["category"], $array["category2"], $array["category3"], $array["category4"]);
-    unset($array["category2"], $array["category3"], $array["category4"]);
-    $array["category"] = array_filter($array["category"]); // remove empty elements (keeping the ones with value "0")
-
-    foreach ($array["category"] as $value) {
-        if (strpos($value, 'Nspire') !== false) {
-            if (@ishere($array["nspire_os"]) && $array["nspire_os"] == '') // try to guess the OS according to the upload date (the timestamp is a bit after 3.1's release)
-                $array["nspire_os"] = ($array["upload_date"] > 1317420000 ? "3.1+ (?)" : "<= 3.0 (?)");
-            break;
+        foreach ($arc->targets as $target) {
+            if (strpos($target->name, 'Nspire') !== false) {
+                $new["nspire_os"] = ($arc->upload_date > 1317420000 ? "3.1+ (?)" : "<= 3.0 (?)");
+                break;
+            }
         }
+        foreach ($arc->authors as $author)
+            $authors[] = $author->name;
+        $new['author'] = $authors;
     }
 
-    put_platform($array);
-
-    $array["category"] = array_unique($array["category"]);
-}
-
-function improve($array)
-{
-    $tmp = array($array["author"], $array["author2"], $array["author3"], $array["author4"]);
-    unset($array["author2"], $array["author3"], $array["author4"]);
-    $array["author"] = array_filter($tmp);
-
-    improve_categories($array);
-
-    $array = array_filter($array, 'clean'); // remove empty elements (keeping the ones with value "0")
-    unset($array["private"]);
-
-    if (@ishere($array["license"]) && strpos($array["license"], "Non spécifiée") !== false) $array["license"] = "Unknown / included";
-    $array["page"] = "https://tiplanet.org/forum/archives_voir.php?id=" . $array["arcID"];
-
-    improve_urls($array);
-
-    return $array;
+    return $new;
 }
 
 function output($element)
