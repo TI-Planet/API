@@ -62,6 +62,7 @@ function AM_to_API($arc, $light = false)
         $new['last_dl'] = (string)$arc->last_hit_date;
         $new['screenshot'] = $arc->screenshots[0];
         $new['license'] = $arc->license->name;
+        $new['visibility'] = (string)$arc->private;
 
         foreach ($arc->targets as $target) {
             if (strpos($target->name, 'Nspire') !== false) {

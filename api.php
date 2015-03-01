@@ -51,7 +51,7 @@ if (@ishere($_REQUEST["key"])) {
                             } else {
                                 if ($arc->deleted !== false) {
                                     output_status(32, "This archive has been deleted.");
-                                } elseif ($arc->private === 1) {
+                                } elseif ($arc->private === 1 && $arc->name === null) { // private and not allowed (user is not uploader, for instance)
                                     output_status(32, "This archive is private.");
                                 } else {
                                     output_resultsNumber(1);
