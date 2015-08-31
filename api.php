@@ -68,7 +68,8 @@ if (@ishere($_REQUEST["key"])) {
                     break;
 
                 case "list":
-                    $archives = $arcMan->search([["private","=","0"], ["deleted","IS","NULL"], ["generator","=","0"]], ["id", "name", "categories"], ["hitsD"], 99999);
+                    $arcMan->useNonGenView(true); // speeds things up by looking at uploads only, not generations.
+                    $archives = $arcMan->search([["private","=","0"], ["deleted","IS","NULL"]], ["id", "name", "categories"], ["hitsD"], 99999);
 
                     foreach ($archives as $arc) {
                         output(AM_to_API($arc, true));
@@ -80,7 +81,8 @@ if (@ishere($_REQUEST["key"])) {
                 case "search":
                     if (@ishere($_REQUEST['name']) || @ishere($_REQUEST['platform']) || @ishere($_REQUEST['author']) || @ishere($_REQUEST['category'])) {
 
-                        $filters = [ ["private","=","0"], ["deleted","IS","NULL"], ["generator","=","0"] ];
+                        $arcMan->useNonGenView(true); // speeds things up by looking at uploads only, not generations.
+                        $filters = [ ["private","=","0"], ["deleted","IS","NULL"] ];
 
                         if (@ishere($_REQUEST['platform'])) {
                             $platform = $_REQUEST['platform'];
