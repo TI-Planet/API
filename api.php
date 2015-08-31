@@ -38,9 +38,9 @@ if (@ishere($_REQUEST["key"])) {
             {
                 case "arc":
                 case "info":
-                    if (@ishere($_REQUEST['arcID']))
+                    if (@ishere($_REQUEST['arcID']) || @ishere($_REQUEST['arcid']))
                     {
-                        $arcID = (int)$_REQUEST['arcID'];
+                        $arcID = @ishere($_REQUEST['arcID']) ? (int)$_REQUEST['arcID'] : (int)$_REQUEST['arcid'];
                         if ($arcID > 0)
                         {
                             $arcMan->select_archive($arcID);
